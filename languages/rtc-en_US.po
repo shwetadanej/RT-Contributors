@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RT Contributors\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-09-09 08:12+0000\n"
+"PO-Revision-Date: 2018-09-09 08:12+0000\n"
+"Last-Translator: root <shwetadanej@gmail.com>\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#. URI of the plugin
+#. Author URI of the plugin
+msgid "#"
+msgstr ""
+
+#: classes/class.rtc_main.php:52 classes/class.rtc_main.php:60
+msgid "Contributors"
+msgstr ""
+
+#. Description of the plugin
+msgid "Displays contributors on post pages."
+msgstr ""
+
+#: templates/rtc_view.php:17
+msgid "No authors found!"
+msgstr ""
+
+#: templates/rtc_view.php:18
+msgid "Please add new authors from USERS->Add New."
+msgstr ""
+
+#. Name of the plugin
+msgid "RT Contributors"
+msgstr ""
+
+#. Author of the plugin
+msgid "Shweta Danej"
+msgstr ""
