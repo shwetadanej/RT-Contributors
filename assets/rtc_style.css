@@ -32,3 +32,15 @@ div#rt_contributors a {
 div#rt_contributors ul li * {
     vertical-align: middle;
 }
+@media (max-width: 414px) {
+   div#rt_contributors ul li {
+        float:none;
+        display:block;
+        margin: 10px;
+    } 
+}
+.entry-content p:last-of-type:after {
+    content: "";
+    display: table;
+    clear: both;
+}

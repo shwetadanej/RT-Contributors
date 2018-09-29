@@ -9,7 +9,7 @@ if (!class_exists("RTC_Main")) {
             add_action('admin_enqueue_scripts', array($this, 'enqueue_style_and_scripts'));
             add_action('wp_enqueue_scripts', array($this, 'enqueue_style_and_scripts'));
             add_action('save_post', array($this, 'save_metabox'), 10, 1);
-            add_filter('the_content', array($this, 'display_contributors'));
+            add_filter('the_content', array($this, 'display_contributors'),99);
         }
 
         function create_meta_box() {
@@ -48,7 +48,7 @@ if (!class_exists("RTC_Main")) {
             global $post;
             $id = $post->ID;
             $contributors = get_post_meta($id, 'rt_contributors', true);
-            if (!empty($contributors) && (is_singular() || is_single())) {
+            if (!empty($contributors)) {
                 $content .= sprintf("<div id='rt_contributors'><p>%s</p><ul>", __("Contributors", "rtc"));
                 foreach ($contributors as $value) {
                     $meta = get_userdata($value);

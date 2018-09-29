@@ -3,7 +3,7 @@
 /*
  * Plugin Name: RT Contributors
  * Plugin URI: #
- * Description: Displays contributors on post pages.
+ * Description: A demo of a WordPress Metabox, which shows contributors at the end of post/pages.
  * Version: 1.0.0
  * Author: Shweta Danej
  * Author URI: #
