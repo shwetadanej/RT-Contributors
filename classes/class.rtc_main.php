@@ -25,12 +25,15 @@ if (!class_exists("RTC_Main")) {
 
         function display_meta_box() {
             global $post;
-            $args = array(
-                'blog_id' => $GLOBALS['blog_id'],
-                'role' => 'author'
-            );
-            $authors = get_users($args);
+            $contributors = array();
+            $all_users = get_users();
+            foreach($all_users as $user){
+                if($user->has_cap('publish_posts') || $user->has_cap('publish_pages')){
+                    $contributors[] = $user;
+                }
+            }
             $selected_contributors = get_post_meta($post->ID, 'rt_contributors', true);
+            $author_id = $post->post_author;
             include( RTC_TEMPLATE . 'rtc_view.php' );
         }
 
