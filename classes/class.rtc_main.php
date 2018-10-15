@@ -4,6 +4,7 @@ if (!class_exists("RTC_Main")) {
 
     class RTC_Main {
 
+        public $contributors;
         function __construct() {
             add_action('add_meta_boxes', array($this, "create_meta_box"));
             add_action('admin_enqueue_scripts', array($this, 'enqueue_style_and_scripts'));
@@ -11,6 +12,7 @@ if (!class_exists("RTC_Main")) {
             add_action('save_post', array($this, 'save_metabox'), 10, 1);
             add_filter('the_content', array($this, 'display_contributors'),99);
             add_filter( 'posts_where', array($this,'modifiy_author_archive_query' ));
+            add_action( 'wp', array($this,'change_author_data' ));
         }
 
         function create_meta_box() {
@@ -29,7 +31,7 @@ if (!class_exists("RTC_Main")) {
             $contributors = array();
             $all_users = get_users();
             foreach($all_users as $user){
-                if($user->has_cap('publish_posts') || $user->has_cap('publish_pages')){
+                if($user->has_cap('publish_posts')){
                     $contributors[] = $user;
                 }
             }
@@ -43,16 +45,25 @@ if (!class_exists("RTC_Main")) {
             if ("post" != $post_type && "page" != $post_type) {
                 return;
             }
+            $prev_users = get_post_meta($id, 'rt_contributors', true);
             if (isset($_POST['rt_authors']) && !empty($_POST['rt_authors'])) {
                 update_post_meta($id, 'rt_contributors', $_POST['rt_authors']);
             }
-            
+            $deleted_users = array_diff($prev_users,  $_POST['rt_authors']);
+            foreach ($deleted_users as $k => $v){
+                $postlist = get_user_meta($v,'rt_contributor_post',true);
+                $key = array_search($id, $postlist);
+                unset($postlist[$key]);
+                update_user_meta($v,'rt_contributor_post' , $postlist);
+            }
             foreach ($_POST['rt_authors'] as $key => $value) {
                 $postlist = get_user_meta($value,'rt_contributor_post',true);
                 if(!is_array($postlist)){
                     $postlist = array();
                 }
-                $postlist[] = $id;
+                if(!in_array($id, $postlist)){
+                    $postlist[] = $id;
+                }
                 update_user_meta($value,'rt_contributor_post' , $postlist);
             }
         }
@@ -76,40 +87,23 @@ if (!class_exists("RTC_Main")) {
         }
         function modifiy_author_archive_query($where){
             if(!is_admin() && is_author()){
-//                global $wpdb;
-//                $args = array(
-//                    'post_type' => array('post'),
-//                    'posts_per_page' => -1,
-//                    'fields'          => 'ids',
-//                    'meta_query' => array(
-//                        array(
-//                            'key'     => 'rt_contributors',
-//                            'compare' => 'EXISTS',
-//                        ),
-//                    )
-//                );
-//                $query = get_posts($args);
-//                $postids = array();
                 $author = get_user_by( 'slug', get_query_var( 'author_name' ) );
                 $authorid = $author->ID;
                 $postids = get_user_meta($authorid,'rt_contributor_post',true);
-                
-//                foreach ($query as $key => $value) {
-//                    $meta_values = get_post_meta($value->ID,'rt_contributors',true);
-//                    if(in_array($authodid, $meta_values)){
-//                        $postids[] = $value->ID;
-//                    }
-//                }
-                $postids = implode(",", $postids);
-                $where .= "OR ID IN ($postids)";
+                if($postids){
+                    $postids = implode(",", $postids);
+                    $where .= "OR ID IN ($postids)";
+                }
             }
-//            echo "<pre>";
-//                print_r($where);
-//                echo "</pre>";
-//            die;
             return $where;
         }
-
+        function change_author_data(){
+            if(!is_admin() && is_author()){
+                global $authordata;
+                $author = get_user_by( 'slug', get_query_var( 'author_name' ) );
+                $authordata = $author;
+            }
+        }
     }
 
     new RTC_Main();
